@@ -9,7 +9,7 @@
         "versions": [
             {
                 "version": "10.11.0.5",
-                "changelog": "Jellyfin Last.fm build v10.11.0.5",
+                "changelog": "Allowing to change the API Host (Libre.fm support) + Masking password in config page",
                 "targetAbi": "10.11.0.0",
                 "sourceUrl": "https://github.com/danielfariati/jellyfin-plugin-lastfm/releases/download/10.11.0.5/lastfm_10.11.0.5.zip",
                 "checksum": "bf42c455fdd9f385e97e63b426b8ecdc",
