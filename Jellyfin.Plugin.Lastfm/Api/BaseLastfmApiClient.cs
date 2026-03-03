@@ -109,8 +109,7 @@
         private static string GetApiEndpointHost()
         {
             var configured = Plugin.Instance?.PluginConfiguration?.LastfmApiHost;
-            var normalized = NormalizeEndpointHost(configured, Strings.Endpoints.LastfmApi);
-            return MapLegacySubmissionHostToWebServiceHost(normalized);
+            return NormalizeEndpointHost(configured, Strings.Endpoints.LastfmApi);
         }
 
         private static string NormalizeEndpointHost(string configured, string fallbackHost)
@@ -138,21 +137,6 @@
             }
 
             return string.IsNullOrWhiteSpace(host) ? fallbackHost : host;
-        }
-
-        private static string MapLegacySubmissionHostToWebServiceHost(string host)
-        {
-            if (host.Equals("post.audioscrobbler.com", StringComparison.OrdinalIgnoreCase))
-            {
-                return "ws.audioscrobbler.com";
-            }
-
-            if (host.Equals("turtle.libre.fm", StringComparison.OrdinalIgnoreCase))
-            {
-                return "libre.fm";
-            }
-
-            return host;
         }
 
         private void LogRequestDiagnostics(Dictionary<string, string> data, string url, string method)
