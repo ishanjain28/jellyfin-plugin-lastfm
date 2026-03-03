@@ -22,7 +22,7 @@
         public static class Keys
         {
             public static string LastfmApiKey     = "cb3bdcd415fcb40cd572b137b2b255f5";
-            public static string LastfmApiSeceret = "3a08f9fad6ddc4c35b0dce0062cecb5e";
+            public static string LastfmApiSecret = "3a08f9fad6ddc4c35b0dce0062cecb5e";
         }
     }
 }
