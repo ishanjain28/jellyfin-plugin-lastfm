@@ -39,6 +39,13 @@
                             <span>Use alternative mode and scrobble on UserDataSaved events instead of PlaybackStopped?</span>
                         </label>
                     </div>
+                    <details>
+                        <summary>Advanced options</summary>
+                        <div class="inputContainer">
+                            <input is="emby-input" id="apiHost" name="apiHost" type="text" label="API host:" />
+                            <div class="fieldDescription">For Last.fm, use: ws.audioscrobbler.com - For Libre.fm, use: libre.fm</div>
+                        </div>
+                    </details>
                     <div>
                         <button is="emby-button" type="submit" class="raised button-submit block emby-button">
                             <span>Save</span>
@@ -60,6 +67,7 @@
                     Username: '',
                     SessionKey: '',
                     MediaBrowserUserId: '',
+                    LastfmApiHost: 'ws.audioscrobbler.com',
                     Options: {
                         Scrobble: false,
                         SyncFavourites: false,
@@ -119,6 +127,7 @@
                 populateInputs: function (userData) {
                     var data = $.extend({}, this.configDefaults, userData);
 
+                    this.$el.find('#apiHost').val(this._config.LastfmApiHost || this.configDefaults.LastfmApiHost);
                     this.$el.find('#username').val(data.Username);
                     this.$el.find('#password').val(data.SessionKey);
                     this.$el.find('#optionScrobble').prop('checked', data.Options.Scrobble);
@@ -130,6 +139,13 @@
 
                 save: function (username, password) {
                     var userConfig = this.getCurrentSelectedUser();
+
+                    this._config.LastfmApiHost = this.$el.find('#apiHost').val() || this.configDefaults.LastfmApiHost;
+
+                    if (!username && !password) {
+                        this.doSave();
+                        return;
+                    }
 
                     //If the config for the user doesn't exist, create one
                     if (!userConfig) {

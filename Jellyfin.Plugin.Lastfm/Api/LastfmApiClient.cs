@@ -44,8 +44,46 @@
 
             var response = await Post<MobileSessionRequest, MobileSessionResponse>(request);
 
+            if (ShouldRetryWithLegacyAuthToken(response))
+            {
+                _logger.LogInformation("Retrying mobile session auth with legacy authToken flow for host={Host}", Plugin.Instance?.PluginConfiguration?.LastfmApiHost);
+
+                request.Password = null;
+                request.AuthToken = BuildLegacyAuthToken(username, password);
+                response = await Post<MobileSessionRequest, MobileSessionResponse>(request);
+            }
+
 
             return response;
+        }
+
+        private static string BuildLegacyAuthToken(string username, string password)
+        {
+            var passwordHash = Helpers.CreateMd5Hash(password).ToLowerInvariant();
+            return Helpers.CreateMd5Hash(username + passwordHash).ToLowerInvariant();
+        }
+
+        private static bool ShouldRetryWithLegacyAuthToken(MobileSessionResponse response)
+        {
+            if (response == null || !response.IsError())
+            {
+                return false;
+            }
+
+            var configuredHost = Plugin.Instance?.PluginConfiguration?.LastfmApiHost;
+            var isLibreHost = !string.IsNullOrWhiteSpace(configuredHost) && configuredHost.Contains("libre.fm", StringComparison.OrdinalIgnoreCase);
+            if (!isLibreHost)
+            {
+                return false;
+            }
+
+            if (response.ErrorCode == 6)
+            {
+                return true;
+            }
+
+            return !string.IsNullOrWhiteSpace(response.Message)
+                && response.Message.Contains("missing a required parameter", StringComparison.OrdinalIgnoreCase);
         }
 
         public async Task Scrobble(Audio item, LastfmUser user)
@@ -84,19 +122,27 @@
 
             try
             {
+                _logger.LogInformation("Submitting scrobble: user={User}, artist={Artist}, track={Track}, album={Album}, timestamp={Timestamp}", user.Username, request.Artist, request.Track, request.Album, request.Timestamp);
+
                 // Send the request
                 var response = await Post<ScrobbleRequest, ScrobbleResponse>(request);
                 if (response != null && !response.IsError())
                 {
-                    _logger.LogInformation("{0} played artist={1}, track={2}, album={3}", user.Username, request.Artist, request.Track, request.Album);
+                    _logger.LogInformation("Scrobble succeeded: user={User}, artist={Artist}, track={Track}, album={Album}", user.Username, request.Artist, request.Track, request.Album);
                     return;
                 }
 
-                _logger.LogError("Failed to Scrobble track: {0}", item.Name);
+                if (response == null)
+                {
+                    _logger.LogError("Scrobble failed with null response: user={User}, artist={Artist}, track={Track}, album={Album}", user.Username, request.Artist, request.Track, request.Album);
+                    return;
+                }
+
+                _logger.LogError("Scrobble failed: user={User}, artist={Artist}, track={Track}, album={Album}, errorCode={ErrorCode}, message={Message}", user.Username, request.Artist, request.Track, request.Album, response.ErrorCode, response.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to Scrobble track: track: ex={0}, name={1}, track={2}, artist={3}, album={4}, albumArtist={5}, mbid={6}", ex, item.Name, request.Track, request.Artist, request.Album, request.AlbumArtist, request.MbId);
+                _logger.LogError("Scrobble exception: ex={0}, user={1}, name={2}, track={3}, artist={4}, album={5}, albumArtist={6}, mbid={7}", ex, user.Username, item.Name, request.Track, request.Artist, request.Album, request.AlbumArtist, request.MbId);
             }
         }
 

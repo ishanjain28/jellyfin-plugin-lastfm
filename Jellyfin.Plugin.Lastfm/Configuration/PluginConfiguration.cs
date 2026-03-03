@@ -2,6 +2,7 @@
 {
     using Models;
     using MediaBrowser.Model.Plugins;
+    using Resources;
 
     /// <summary>
     /// Class PluginConfiguration
@@ -9,6 +10,7 @@
     public class PluginConfiguration : BasePluginConfiguration
     {
         public LastfmUser[] LastfmUsers { get; set; }
+        public string LastfmApiHost { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PluginConfiguration" /> class.
@@ -16,6 +18,7 @@
         public PluginConfiguration()
         {
             LastfmUsers = new LastfmUser[] { };
+            LastfmApiHost = Strings.Endpoints.LastfmApi;
         }
     }
 }
