@@ -62,11 +62,6 @@ If a user changes their Last.fm password, you may need to reconfigure the plugin
 
     Please note that while the plugin may work with Last.fm-compatible services, it is primarily designed and tested against the official Last.fm API. Compatibility with other services may vary based on how closely they adhere to the Last.fm API specifications.
 
-Use this only if you want to target a Last.fm-compatible service endpoint.
-
-If you change the API host, you should re-authenticate the user (enter password again and save) so a new session key is generated for that host.
-
-
 ## 🔄 Migrating from the Archived jesseward Plugin
 
 This plugin replaces and continues the [archived repository](https://github.com/jesseward/jellyfin-plugin-lastfm).
