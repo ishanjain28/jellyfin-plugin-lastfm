@@ -86,7 +86,7 @@
                 && response.Message.Contains("missing a required parameter", StringComparison.OrdinalIgnoreCase);
         }
 
-        public async Task Scrobble(Audio item, LastfmUser user)
+        public async Task Scrobble(Audio item, LastfmUser user, DateTime? startedAt = null)
         {
             if (CheckAndUpdateScrobbleCache(user.Username, item.Id.ToString()))
             {
@@ -98,7 +98,7 @@
             {
                 Track = item.Name,
                 Artist = item.Artists.First(),
-                Timestamp = Helpers.CurrentTimestamp(),
+                Timestamp = startedAt.HasValue ? Helpers.ToTimestamp(startedAt.Value) : Helpers.CurrentTimestamp(),
 
                 ApiKey = Strings.Keys.LastfmApiKey,
                 Method = Strings.Methods.Scrobble,

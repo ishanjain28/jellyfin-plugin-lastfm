@@ -39,6 +39,14 @@
                             <span>Use alternative mode and scrobble on UserDataSaved events instead of PlaybackStopped?</span>
                         </label>
                     </div>
+
+                    <div id="libraryFiltersSection">
+                        <br />
+                        <h3 class="checkboxListLabel">Exclude scrobbling from these libraries:</h3>
+                        <div id="libraryFilters" class="checkboxList">
+                        </div>
+                    </div>
+
                     <details>
                         <summary>Advanced options</summary>
                         <div class="inputContainer">
@@ -62,6 +70,7 @@
                 _pluginUniqueId: "5e7fe7f0-b048-429e-a431-b1a7e69c930d",
                 _users: [],
                 _config: [],
+                _libraries: [],
 
                 _currentUserId: '',
                 _currentUserConfig: null,
@@ -74,7 +83,8 @@
                     Options: {
                         Scrobble: false,
                         SyncFavourites: false,
-                        AlternativeMode: false
+                        AlternativeMode: false,
+                        ExcludedLibraries: []
                     }
                 },
 
@@ -90,9 +100,10 @@
 
                     var loadConfig = this.loadConfiguration();
                     var loadUsers = this.loadUsers().then($.proxy(this.buildUserList, this));
+                    var loadLibraries = this.loadLibraries();
 
                     //When we load everything, set the current user
-                    $.when(loadConfig, loadUsers).then($.proxy(function () {
+                    $.when(loadConfig, loadUsers, loadLibraries).then($.proxy(function () {
                         Dashboard.hideLoadingMsg();
 
                         //Populate the inputs with the default selected user
@@ -112,6 +123,25 @@
                     }, this));
                 },
 
+                loadLibraries: function () {
+                    return ApiClient.getJSON(ApiClient.getUrl("Library/VirtualFolders")).then($.proxy(function (result) {
+                        this._libraries = result;
+                        this.renderLibraryFilters();
+                    }, this));
+                },
+
+                renderLibraryFilters: function () {
+                    var html = '';
+                    $.each(this._libraries, function (i, library) {
+                        html += '<label>';
+                        html += '<input is="emby-checkbox" type="checkbox" class="libraryFilter" data-id="' + library.ItemId + '" />';
+                        html += '<span>' + library.Name + '</span>';
+                        html += '</label>';
+                    });
+
+                    this.$el.find('#libraryFilters').html(html);
+                },
+
                 saveConfiguration: function () {
                     return ApiClient.updatePluginConfiguration(this._pluginUniqueId, this._config);
                 },
@@ -128,7 +158,7 @@
                 },
 
                 populateInputs: function (userData) {
-                    var data = $.extend({}, this.configDefaults, userData);
+                    var data = $.extend(true, {}, this.configDefaults, userData);
 
                     this.$el.find('#apiHost').val(this._config.LastfmApiHost || this.configDefaults.LastfmApiHost);
                     this.$el.find('#username').val(data.Username);
@@ -136,6 +166,12 @@
                     this.$el.find('#optionScrobble').prop('checked', data.Options.Scrobble);
                     this.$el.find('#optionFavourite').prop('checked', data.Options.SyncFavourites);
                     this.$el.find('#optionAltMode').prop('checked', data.Options.AlternativeMode);
+
+                    var excludedLibraries = data.Options.ExcludedLibraries || [];
+                    this.$el.find('.libraryFilter').each(function () {
+                        var id = $(this).attr('data-id');
+                        $(this).prop('checked', excludedLibraries.indexOf(id) > -1);
+                    });
 
                     // Don't forget to call checkboxradio('refresh') otherwise the UI wont update
                 },
@@ -235,6 +271,12 @@
                     options.Scrobble = this.$el.find('#optionScrobble').prop('checked');
                     options.SyncFavourites = this.$el.find('#optionFavourite').prop('checked');
                     options.AlternativeMode = this.$el.find('#optionAltMode').prop('checked');
+
+                    options.ExcludedLibraries = [];
+                    this.$el.find('.libraryFilter:checked').each(function () {
+                        options.ExcludedLibraries.push($(this).attr('data-id'));
+                    });
+
                     return options;
                 },
 
