@@ -10,8 +10,8 @@ The plugin was originally migrated from the Emby repository and adapted to funct
 
 Install the plugin via the Jellyfin plugin repository. Navigate to the **Plugins** section of the admin dashboard and add the following repository to receive stable builds of this plugin:
 
-- **Repo name:** Last.fm Stable  
-- **Repo URL:** https://raw.githubusercontent.com/danielfariati/jellyfin-plugin-lastfm/refs/heads/master/manifest.json
+- **Repo name:** Last.fm Stable
+- **Repo URL:** https://raw.githubusercontent.com/ishanjain28/jellyfin-plugin-lastfm/refs/heads/master/manifest.json
 
 Restart the Jellyfin server after installation.
 
@@ -30,16 +30,16 @@ It is used only to authenticate with Last.fm and obtain a **session key**, which
 
 If a user changes their Last.fm password, you may need to reconfigure the plugin for that user.
 
-- **Enable Scrobbling for this user?**  
+- **Enable Scrobbling for this user?**
   Enables or disables Last.fm scrobbling for the selected Jellyfin user.
 
-- **Sync favourites for this user?**  
+- **Sync favourites for this user?**
   Enables two-way synchronization between Jellyfin favourites and Last.fm loved tracks.
 
 - **Use alternative mode and scrobble on `UserDataSaved` events instead of `PlaybackStopped`?**
 
   By default, the plugin scrobbles tracks when Jellyfin emits the `PlaybackStopped` event. This event is reported by the client, and its timing and accuracy depend on the client implementation. Some clients may emit this event with delayed or synthetic timing, or may not emit it consistently (particularly mobile clients), which can lead to missing or inconsistent scrobbles.
-  
+
   When **Alternative Mode** is enabled, the plugin scrobbles tracks on `UserDataSaved` events instead. These events are triggered when Jellyfin persists playback progress or marks an item as played, making scrobbling dependent on server-side playback state rather than client-reported stop events.
 
   **Enable Alternative Mode if:**

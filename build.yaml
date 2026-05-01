@@ -8,8 +8,8 @@ overview: "A plugin that scrobbles your Jellyfin music to Last.fm"
 description: >
   Scrobble Last.fm plays with Jellyfin.
 category: "Music"
-owner: "danielfariati"
+owner: "ishanjain28"
 artifacts:
   - "Jellyfin.Plugin.Lastfm.dll"
 changelog: >
-  Manifest tools updated to danielfariati/jellyfin-utilities
+  Manifest tools updated to ishanjain28/jellyfin-utilities
