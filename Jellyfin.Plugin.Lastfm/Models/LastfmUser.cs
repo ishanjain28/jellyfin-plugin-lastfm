@@ -19,5 +19,11 @@
         public bool Scrobble        { get; set; }
         public bool SyncFavourites  { get; set; }
         public bool AlternativeMode { get; set; }
+        public string[] ExcludedLibraries { get; set; }
+
+        public LastFmUserOptions()
+        {
+            ExcludedLibraries = Array.Empty<string>();
+        }
     }
 }

@@ -1,15 +1,15 @@
 ---
 name: "Last.fm"
 guid: "5e7fe7f0-b048-429e-a431-b1a7e69c930d"
-version: "10.11.0.5"
-targetAbi: "10.11.0.5"
+version: "10.11.8.2"
+targetAbi: "10.11.8.2"
 framework: "net9.0"
 overview: "A plugin that scrobbles your Jellyfin music to Last.fm"
 description: >
   Scrobble Last.fm plays with Jellyfin.
 category: "Music"
-owner: "danielfariati"
+owner: "ishanjain28"
 artifacts:
   - "Jellyfin.Plugin.Lastfm.dll"
 changelog: >
-  Manifest tools updated to danielfariati/jellyfin-utilities
+  Manifest tools updated to ishanjain28/jellyfin-utilities
