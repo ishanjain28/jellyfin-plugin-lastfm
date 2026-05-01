@@ -8,6 +8,14 @@
         "category": "music",
         "versions": [
             {
+                "version": "10.11.8.2",
+                "changelog": "Jellyfin Last.fm build v10.11.8.2",
+                "targetAbi": "10.11.0.0",
+                "sourceUrl": "https://github.com/ishanjain28/jellyfin-plugin-lastfm/releases/download/10.11.8.2/lastfm_10.11.8.2.zip",
+                "checksum": "d12e2af2f5a5ca4d0af21cb84e426075",
+                "timestamp": "2026-05-01T20:31:53Z"
+            },
+            {
                 "version": "10.11.8.0",
                 "changelog": "Jellyfin Last.fm build v10.11.8.0",
                 "targetAbi": "10.11.0.0",
